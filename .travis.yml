@@ -1,0 +1,9 @@
+language: scala
+scala:
+  - 0.22.0-RC1
+jobs:
+  include:
+    - stage: compile
+      script: sbt clean compile
+    - stage: test
+      script: sbt test clean
