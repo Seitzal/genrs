@@ -36,8 +36,13 @@ object Resource
     def isCompound(b: Boolean) = false
     def rtype(b: Boolean) = "boolean"
     def textual(b: Boolean) = b.toString
-  
+
   implicit def genResource[T <: GenResource]: Resource[T] = new Resource[T]:
     def isCompound(genRes: T) = genRes.isCompound
     def rtype(genRes: T) = genRes.rtype
     def textual(genRes: T) = genRes.textual
+
+  implicit def listResource[T: Resource]: Resource[List[T]] = new Resource[List[T]]:
+    def isCompound(list: List[T]) = true
+    def rtype(list: List[T]) = "list"
+    def textual(list: List[T]) = "(list)"
