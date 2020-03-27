@@ -131,7 +131,7 @@ class ResourceSuite extends AnyFunSuite
   }
 
   test("JSON encoding: KVObjectResource") {
-    val expected = 
+    val expected =
       "{\"name\":\"kvObject0\",\"description\":\"A key-value object\",\"data\":"
       + "{\"l0\":[\"Hello\",\"World\"],\"l1\":[1.0,2.0,-6.0,10000.0,7.3]}}"
     assert(kvObject0.json == expected)

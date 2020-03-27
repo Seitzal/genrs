@@ -34,28 +34,28 @@ object Resource
       def textual(int: Int) = int.toString
       def json(int: Int) = int.toString
 
-  implicit val doubleResource: Resource[Double] = 
+  implicit val doubleResource: Resource[Double] =
     new Resource[Double]:
       def isCompound(d: Double) = false
       def rtype(d: Double) = "double"
       def textual(d: Double) = d.toString
       def json(d: Double) = d.toString
 
-  implicit val booleanResource: Resource[Boolean] = 
+  implicit val booleanResource: Resource[Boolean] =
     new Resource[Boolean]:
       def isCompound(b: Boolean) = false
       def rtype(b: Boolean) = "boolean"
       def textual(b: Boolean) = b.toString
       def json(b: Boolean) = b.toString
 
-  implicit def genResource[T <: GenResource]: Resource[T] = 
+  implicit def genResource[T <: GenResource]: Resource[T] =
     new Resource[T]:
       def isCompound(genRes: T) = genRes.isCompound
       def rtype(genRes: T) = genRes.rtype
       def textual(genRes: T) = genRes.textual
       def json(genRes: T) = genRes.json
 
-  implicit def listResource[T: Resource]: Resource[List[T]] = 
+  implicit def listResource[T: Resource]: Resource[List[T]] =
     new Resource[List[T]]:
       def isCompound(list: List[T]) = true
       def rtype(list: List[T]) = "list"

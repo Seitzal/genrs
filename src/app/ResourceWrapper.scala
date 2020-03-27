@@ -17,4 +17,3 @@ case class ResourceWrapper[T: Resource](res: T) extends GenResource
   override def equals(other: Any) = other match
     case rw: ResourceWrapper[_] => this.res == rw.res
     case _ => res == other
-

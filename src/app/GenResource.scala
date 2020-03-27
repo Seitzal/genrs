@@ -1,7 +1,7 @@
 package genrs
 
 /**
- * Trait to allow for simple resource type definition without knowledge of 
+ * Trait to allow for simple resource type definition without knowledge of
  * typeclasses
  */
 trait GenResource

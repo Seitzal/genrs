@@ -7,7 +7,7 @@ import genrs.Resource.ResourceOps
  * Resource implementation of an untyped key-value object, like Javascript/JSON
  * objects. Keys must be strings, Values must be wrapped resources.
  */
-case class KVObjectResource(kv: Map[String, ResourceWrapper[_]]) 
+case class KVObjectResource(kv: Map[String, ResourceWrapper[_]])
     extends GenResource
   def isCompound = true
   def rtype = "kv"
