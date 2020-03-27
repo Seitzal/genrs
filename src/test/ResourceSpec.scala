@@ -1,7 +1,7 @@
 package genrs.test
 
 import genrs._
-import genrs.Resource._
+import genrs.Resource.ResourceOps
 
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -48,7 +48,7 @@ class ResourceSuite extends AnyFunSuite
     assert(genericResourceFunction(r3))
   }
 
-  test("Members of GenResource trait should behave according to Resource typeclass") {
+  test("Members of GenResource trait should typecheck as resources") {
     assert(genericResourceFunction(StrangeResource))
   }
 
