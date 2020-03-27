@@ -8,3 +8,4 @@ trait GenResource
   def isCompound: Boolean
   def rtype: String
   def textual: String
+  def json: String

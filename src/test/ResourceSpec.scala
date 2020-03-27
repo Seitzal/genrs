@@ -15,10 +15,20 @@ class ResourceSuite extends AnyFunSuite
     def isCompound = false
     def rtype = "strange_resource"
     def textual = "I am a strange resource in text form"
+    def json = "\"I am a strange resource in text form\""
 
   val l0 = List("Hello", "World")
   val l1 = List(1, 2, -6, 10000, 7.3)
   val l2 = List(l1, List(13.3, -2220.0))
+
+  val kvObject0 = KVObjectResource(Map(
+    "name" -> ResourceWrapper("kvObject0"),
+    "description" -> ResourceWrapper("A key-value object"),
+    "data" -> ResourceWrapper(KVObjectResource(Map(
+      "l0" -> ResourceWrapper(l0),
+      "l1" -> ResourceWrapper(l1)
+    )))
+  ))
 
   test("Simple resources should be flagged as non-compound") {
     assert(!r0.isCompound)
@@ -62,4 +72,57 @@ class ResourceSuite extends AnyFunSuite
     assert(l0.isCompound)
     assert(l1.isCompound)
     assert(l2.isCompound)
+  }
+
+  test("KVObjectResource should typecheck as resource") {
+    assert(genericResourceFunction(kvObject0))
+  }
+
+  test("KVObjectResource should allow typed lookup") {
+    val name = kvObject0[String]("name")
+    assert(name.rtype == "string")
+  }
+
+  // PENDING SOLUTION FOR https://github.com/scalatest/scalatest/issues/1798
+  //
+  // test("KVObjectResource should allow untyped lookup") {
+  //   val name = kvObject0.kv("name")
+  //   assert(name.rtype == "string")
+  //   assert(name.isInstanceOf[ResourceWrapper[String]])
+  // }
+
+  test("JSON encoding: string") {
+    assert(r0.json == "\"Hello World\"")
+  }
+
+  test("JSON encoding: int") {
+    assert(r1.json == "-12")
+  }
+
+  test("JSON encoding: double") {
+    assert(r2.json == "3.5638")
+  }
+
+  test("JSON encoding: boolean") {
+    assert(r3.json == "false")
+  }
+
+  test("JSON encoding: empty list") {
+    assert(List[String]().json == "[]")
+  }
+
+  test("JSON encoding: flat lists") {
+    assert(l0.json == "[\"Hello\",\"World\"]")
+    assert(l1.json == "[1.0,2.0,-6.0,10000.0,7.3]")
+  }
+
+  test("JSON encoding: nested list") {
+    assert(l2.json == "[[1.0,2.0,-6.0,10000.0,7.3],[13.3,-2220.0]]")
+  }
+
+  test("JSON encoding: KVObjectResource") {
+    val expected = 
+      "{\"name\":\"kvObject0\",\"description\":\"A key-value object\",\"data\":" +
+      "{\"l0\":[\"Hello\",\"World\"],\"l1\":[1.0,2.0,-6.0,10000.0,7.3]}}"
+    assert(kvObject0.json == expected)
   }
