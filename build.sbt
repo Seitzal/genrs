@@ -6,7 +6,8 @@ libraryDependencies ++= Seq(
 ).map(_.withDottyCompat(scalaVersion.value))
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.1.1" % "test"
+  "org.scalatest" %% "scalatest" % "3.1.1" % "test",
+  "com.typesafe" % "config" % "1.4.0"
 )
 
 Compile / scalaSource := baseDirectory.value / "src" / "app"
