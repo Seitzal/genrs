@@ -79,8 +79,18 @@ class ResourceSuite extends AnyFunSuite
   }
 
   test("KVObjectResource should allow typed lookup") {
-    val name = kvObject0[String]("name")
+    val name = kvObject0.get[String]("name")
     assert(name.rtype == "string")
+  }
+
+  test("Pattern matching on wrapped resources should reveal their type") {
+    def identify(rw: ResourceWrapper[_]) = rw.res match
+      case str: String => "string"
+      case l: List[_] => "list"
+      case kvo: KVObjectResource => "kvo"
+    assert(identify(kvObject0("name")) == "string")
+    assert(identify(kvObject0("data")) == "kvo")
+    assert(identify(ResourceWrapper(l0)) == "list")
   }
 
   // PENDING SOLUTION FOR https://github.com/scalatest/scalatest/issues/1798
@@ -122,7 +132,12 @@ class ResourceSuite extends AnyFunSuite
 
   test("JSON encoding: KVObjectResource") {
     val expected = 
-      "{\"name\":\"kvObject0\",\"description\":\"A key-value object\",\"data\":" +
-      "{\"l0\":[\"Hello\",\"World\"],\"l1\":[1.0,2.0,-6.0,10000.0,7.3]}}"
+      "{\"name\":\"kvObject0\",\"description\":\"A key-value object\",\"data\":"
+      + "{\"l0\":[\"Hello\",\"World\"],\"l1\":[1.0,2.0,-6.0,10000.0,7.3]}}"
     assert(kvObject0.json == expected)
+  }
+
+  test("JSON roundtripping a complex resource should not change it "
+  + "(apart from wrapping)") {
+    assert(JSONDecoder.decode(kvObject0.json).res == kvObject0)
   }
