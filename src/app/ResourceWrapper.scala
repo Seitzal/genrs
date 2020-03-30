@@ -1,7 +1,7 @@
 package genrs
 
 import genrs._
-import genrs.Resource.ResourceOps
+import genrs.Resource.given
 
 /**
  * Wrapper class to allow for wildcard resource type parameters

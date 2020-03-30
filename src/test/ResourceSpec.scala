@@ -1,7 +1,7 @@
 package genrs.test
 
 import genrs._
-import genrs.Resource.ResourceOps
+import genrs.Resource.given
 
 import org.scalatest.funsuite.AnyFunSuite
 
