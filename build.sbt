@@ -1,7 +1,7 @@
 scalaVersion := "0.22.0-RC1"
 
 libraryDependencies ++= Seq(
-  "com.lihaoyi" %% "upickle" % "0.9.5",
+  "com.lihaoyi" %% "ujson" % "0.9.5",
 ).map(_.withDottyCompat(scalaVersion.value))
 
 libraryDependencies ++= Seq(
