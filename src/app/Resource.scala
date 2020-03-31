@@ -20,12 +20,15 @@ trait Resource[T : ClassTag]
 
   def fromJsonUnsafe(json: ujson.Value): T =
     fromJson(json).get
-  
-  def fromJson(str: String): Try[T] =
-    JsonDecoder.read(str).flatMap(fromJson)
+
+  private def readJsonUnsafe(str: String) = 
+    ujson.read(ujson.Readable.fromString(str))
 
   def fromJsonUnsafe(str: String): T =
-    fromJsonUnsafe(JsonDecoder.readUnsafe(str))
+    fromJsonUnsafe(readJsonUnsafe(str))
+  
+  def fromJson(str: String): Try[T] =
+    Try(readJsonUnsafe(str)).flatMap(fromJson)
 
 object Resource extends ResourceInstances with ResourceExtensions
 

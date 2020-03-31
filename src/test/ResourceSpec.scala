@@ -164,14 +164,10 @@ class ResourceSuite extends AnyFunSuite
     assert(Resource[List[List[Double]]].fromJsonUnsafe(l_json) == l)
   }
 
-  test("Json encoding: JsonObject") {
-    val expected =
+  test("Json encoding / decoding should work for JSON objects") {
+    val object0_json =
       "{\"name\":\"object0\",\"description\":\"A key-value object\",\"data\":"
       + "{\"l0\":[\"Hello\",\"World\"],\"l1\":[1.0,2.0,-6.0,10000.0,7.3]}}"
-    assert(object0.toJson == expected)
-  }
-
-  test("toJson roundtripping a complex resource should not change it "
-  + "(apart from wrapping)") {
-    assert(JsonDecoder.decodeUnsafe(object0.toJson).res == object0)
+    assert(object0.toJson == object0.toJson)
+    assert(Resource[JsonObject].fromJsonUnsafe(object0_json) == object0)
   }
