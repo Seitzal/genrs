@@ -1,7 +1,8 @@
 package genrs.test
 
 import genrs._
-import genrs.Resource.given
+import genrs.given
+import genrs.errors._
 
 import org.scalatest.funsuite.AnyFunSuite
 

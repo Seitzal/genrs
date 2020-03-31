@@ -2,6 +2,7 @@ package genrs
 
 import scala.util.{Try, Success, Failure}
 
+/** Utility singleton for interop with the uJson AST. */
 private[genrs] object JsonDecoder
 
   def read(str: String) = 
@@ -10,6 +11,7 @@ private[genrs] object JsonDecoder
   def readUnsafe(str: String) = 
     read(str).get
 
+  // TODO: Move type-specific decode logic to the instance definitions
   def decodeUnsafe(ujv: ujson.Value): ResourceWrapper[_] = ujv match
 
     case ujson.Obj(value) =>
@@ -33,7 +35,7 @@ private[genrs] object JsonDecoder
       ResourceWrapper(true)
 
     case _ =>
-      throw new JsonDecodeException()
+      throw new errors.JsonDecodeException()
 
   def decode(json: ujson.Value): Try[ResourceWrapper[_]] =
     Try(decodeUnsafe(json))

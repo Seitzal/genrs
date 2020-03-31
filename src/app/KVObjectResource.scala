@@ -1,8 +1,5 @@
 package genrs
 
-import genrs._
-import genrs.Resource.given
-
 import scala.util.{Try, Success, Failure}
 import scala.reflect.ClassTag
 
