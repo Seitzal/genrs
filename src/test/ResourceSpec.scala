@@ -5,6 +5,8 @@ import genrs.Resource.given
 
 import org.scalatest.funsuite.AnyFunSuite
 
+import scala.util.{Try, Success, Failure}
+
 class ResourceSuite extends AnyFunSuite
 
   val (r0, r1, r2, r3) = ("Hello World", -12, 3.5638, false)
@@ -78,9 +80,26 @@ class ResourceSuite extends AnyFunSuite
     assert(genericResourceFunction(kvObject0))
   }
 
-  test("KVObjectResource should allow typed lookup") {
-    val name = kvObject0.get[String]("name")
+  test("KVObjectResource should allow untyped lookup") {
+    val name = kvObject0.kv("name")
     assert(name.rtype == "string")
+    assert(name.res.isInstanceOf[String])
+  }
+
+  test("KVObjectResource should allow typed lookup") {
+    assert(kvObject0.getUnsafe[String]("name") == "kvObject0")
+  }
+
+  test("Typed lookup should fail if a wrong type is looked up") {
+    assertThrows[ResourceTypeException] {
+      kvObject0.getUnsafe[Double]("name")
+    }
+  }
+
+  test("Typed lookup should fail if a nondefined key is looked up") {
+    assertThrows[NoSuchElementException] {
+      kvObject0.getUnsafe[String]("invalid_key")
+    }
   }
 
   test("Pattern matching on wrapped resources should reveal their type") {
@@ -92,14 +111,6 @@ class ResourceSuite extends AnyFunSuite
     assert(identify(kvObject0("data")) == "kvo")
     assert(identify(ResourceWrapper(l0)) == "list")
   }
-
-  // PENDING SOLUTION FOR https://github.com/scalatest/scalatest/issues/1798
-  //
-  // test("KVObjectResource should allow untyped lookup") {
-  //   val name = kvObject0.kv("name")
-  //   assert(name.rtype == "string")
-  //   assert(name.isInstanceOf[ResourceWrapper[String]])
-  // }
 
   test("JSON encoding: string") {
     assert(r0.json == "\"Hello World\"")
