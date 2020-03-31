@@ -55,3 +55,17 @@ object JsonObject
       Try(patternDecode(json))
         .flatMap(_.extract[JsonObject])
         .orElse(Failure(JsonConversionException("JsonObject")))
+
+  object dsl
+
+    def jsonObject(kvs: (String, ResourceWrapper[_])*) =
+      JsonObject(kvs.toMap)
+
+    def v[R: Resource](v: R) =
+      ResourceWrapper(v)
+
+    def l[R: Resource](vs: R*) =
+      ResourceWrapper(vs.toList)
+    
+    def o(kvs: (String, ResourceWrapper[_])*) =
+      ResourceWrapper(JsonObject(kvs.toMap))

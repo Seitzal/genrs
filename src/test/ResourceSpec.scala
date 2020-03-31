@@ -3,6 +3,7 @@ package genrs.test
 import genrs._
 import genrs.given
 import genrs.errors._
+import genrs.JsonObject.dsl._
 
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -26,14 +27,14 @@ class ResourceSuite extends AnyFunSuite
   val l1 = List(1, 2, -6, 10000, 7.3)
   val l2 = List(l1, List(13.3, -2220.0))
 
-  val object0 = JsonObject(Map(
-    "name" -> ResourceWrapper("object0"),
-    "description" -> ResourceWrapper("A key-value object"),
-    "data" -> ResourceWrapper(JsonObject(Map(
-      "l0" -> ResourceWrapper(l0),
-      "l1" -> ResourceWrapper(l1)
-    )))
-  ))
+  val object0 = jsonObject(
+    "name" -> v("object0"),
+    "description" -> v("A key-value object"),
+    "data" -> o(
+      "l0" -> l("Hello", "World"),
+      "l1" -> l(1, 2, -6, 10000, 7.3)
+    )
+  )
 
   test("Simple resources should be flagged as non-compound") {
     assert(!r0.isCompound)
