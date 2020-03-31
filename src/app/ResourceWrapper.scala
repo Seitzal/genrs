@@ -9,12 +9,12 @@ import scala.reflect.ClassTag
 /**
  * Wrapper class to allow for wildcard resource type parameters
  */
-final case class ResourceWrapper[T: Resource](res: T) extends GenResource
+final case class ResourceWrapper[T: Resource](res: T)
 
   def isCompound = res.isCompound
   def rtype = res.rtype
   def textual = res.textual
-  def json = res.json
+  def toJson = res.toJson
 
   // Equality operator should ignore wrapping
   override def equals(other: Any) = other match
@@ -44,3 +44,15 @@ final case class ResourceWrapper[T: Resource](res: T) extends GenResource
    *  @tparam R The type of resource to be extracted.
    */
   def extractOpt[R: Resource: ClassTag]: Option[R] = extract[R].toOption
+
+object ResourceWrapper
+  given as Resource[ResourceWrapper[_]]:
+    def isCompound(rw: ResourceWrapper[_]) = rw.isCompound
+    def rtype(rw: ResourceWrapper[_]) = rw.rtype
+    def textual(rw: ResourceWrapper[_]) = rw.textual
+    def toJson(rw: ResourceWrapper[_]) = rw.toJson
+    def fromJson(json: ujson.Value) =
+      Failure(Error(
+        "Cannot read resource wrappers from Json due to type system " +
+        "restrictions. Try reading a resource and then wrapping it instead."
+      ))

@@ -11,13 +11,17 @@ class ResourceSuite extends AnyFunSuite
 
   val (r0, r1, r2, r3) = ("Hello World", -12, 3.5638, false)
 
-  def genericResourceFunction[T: Resource](res: T): Boolean = res.textual != ""
+  def genericResourceFunction[T: Resource](res: T): Boolean =
+    res.textual != ""
 
-  object StrangeResource extends GenResource
-    def isCompound = false
-    def rtype = "strange_resource"
-    def textual = "I am a strange resource in text form"
-    def json = "\"I am a strange resource in text form\""
+  class StrangeResource
+
+  given as Resource[StrangeResource]:
+    def isCompound(sr: StrangeResource) = false
+    def rtype(sr: StrangeResource) = "strange_resource"
+    def textual(sr: StrangeResource) = "I am a strange resource in text form"
+    def toJson(sr: StrangeResource) = "\"I am a strange resource in text form\""
+    def fromJson(json: ujson.Value) = Success(new StrangeResource)
 
   val l0 = List("Hello", "World")
   val l1 = List(1, 2, -6, 10000, 7.3)
@@ -61,7 +65,7 @@ class ResourceSuite extends AnyFunSuite
   }
 
   test("Members of GenResource trait should typecheck as resources") {
-    assert(genericResourceFunction(StrangeResource))
+    assert(genericResourceFunction(new StrangeResource))
   }
 
   test("Lists of any resource type should typecheck as resources") {
@@ -112,43 +116,61 @@ class ResourceSuite extends AnyFunSuite
     assert(identify(ResourceWrapper(l0)) == "list")
   }
 
-  test("JSON encoding: string") {
-    assert(r0.json == "\"Hello World\"")
+  test("Json encoding / decoding should work for strings") {
+    assert("Hello World".toJson == "\"Hello World\"")
+    assert(Resource[String].fromJsonUnsafe("\"Hello World\"") == "Hello World")
   }
 
-  test("JSON encoding: int") {
-    assert(r1.json == "-12")
+  test("Json encoding / decoding should work for ints") {
+    assert(12.toJson == "12")
+    assert(Resource[Int].fromJsonUnsafe("12") == 12)
   }
 
-  test("JSON encoding: double") {
-    assert(r2.json == "3.5638")
+  test("Json encoding / decoding should work for doubles") {
+    assert(3.5638.toJson == "3.5638")
+    assert(Resource[Double].fromJsonUnsafe("3.5638") == 3.5638)
   }
 
-  test("JSON encoding: boolean") {
-    assert(r3.json == "false")
+  test("Json encoding / decoding should work for booleans") {
+    assert(true.toJson == "true")
+    assert(false.toJson == "false")
+    assert(Resource[Boolean].fromJsonUnsafe("true") == true)
+    assert(Resource[Boolean].fromJsonUnsafe("false") == false)
   }
 
-  test("JSON encoding: empty list") {
-    assert(List[String]().json == "[]")
+  test("Json encoding / decoding should work for empty lists") {
+    assert(List[String]().toJson == "[]")
+    assert(Resource[List[String]].fromJsonUnsafe("[]") == List())
+    assert(List[StrangeResource]().toJson == "[]")
+    assert(Resource[List[StrangeResource]].fromJsonUnsafe("[]") == List())
   }
 
-  test("JSON encoding: flat lists") {
-    assert(l0.json == "[\"Hello\",\"World\"]")
-    assert(l1.json == "[1.0,2.0,-6.0,10000.0,7.3]")
+  test("Json encoding / decoding should work for flat lists") { 
+    assert(List("Hello", "World").toJson == "[\"Hello\",\"World\"]")
+    assert(List(1, 2, -6, 10000, 7.3).toJson == "[1.0,2.0,-6.0,10000.0,7.3]")
+    assert(
+      Resource[List[String]].fromJsonUnsafe("[\"Hello\",\"World\"]") ==
+      List("Hello", "World"))
+    assert(
+      Resource[List[Double]].fromJsonUnsafe("[1.0,2.0,-6.0,10000.0,7.3]") ==
+      List(1, 2, -6, 10000, 7.3))
   }
 
-  test("JSON encoding: nested list") {
-    assert(l2.json == "[[1.0,2.0,-6.0,10000.0,7.3],[13.3,-2220.0]]")
+  test("Json encoding / decoding should work for nested lists") {
+    val l = List(List(1, 2, -6, 10000, 7.3), List(13.3, -2220.0))
+    val l_json = "[[1.0,2.0,-6.0,10000.0,7.3],[13.3,-2220.0]]"
+    assert(l.toJson == l_json)
+    assert(Resource[List[List[Double]]].fromJsonUnsafe(l_json) == l)
   }
 
-  test("JSON encoding: KVObjectResource") {
+  test("toJson encoding: KVObjectResource") {
     val expected =
       "{\"name\":\"kvObject0\",\"description\":\"A key-value object\",\"data\":"
       + "{\"l0\":[\"Hello\",\"World\"],\"l1\":[1.0,2.0,-6.0,10000.0,7.3]}}"
-    assert(kvObject0.json == expected)
+    assert(kvObject0.toJson == expected)
   }
 
-  test("JSON roundtripping a complex resource should not change it "
+  test("toJson roundtripping a complex resource should not change it "
   + "(apart from wrapping)") {
-    assert(JSONDecoder.decode(kvObject0.json).res == kvObject0)
+    assert(JsonDecoder.decodeUnsafe(kvObject0.toJson).res == kvObject0)
   }
