@@ -12,15 +12,13 @@ class ResourceSuite extends AnyFunSuite
 
   val (r0, r1, r2, r3) = ("Hello World", -12, 3.5638, false)
 
-  def genericResourceFunction[T: Resource](res: T): Boolean =
-    res.textual != ""
+  def genericResourceFunction[T: Resource](res: T): Boolean = true
 
   class StrangeResource
 
   given as Resource[StrangeResource]:
     def isCompound(sr: StrangeResource) = false
     def rtype(sr: StrangeResource) = "strange_resource"
-    def textual(sr: StrangeResource) = "I am a strange resource in text form"
     def toJson(sr: StrangeResource) = "\"I am a strange resource in text form\""
     def fromJson(json: ujson.Value) = Success(new StrangeResource)
 
@@ -49,13 +47,6 @@ class ResourceSuite extends AnyFunSuite
     assert(r1.rtype == "int")
     assert(r2.rtype == "double")
     assert(r3.rtype == "boolean")
-  }
-
-  test("Simple resources should return their proper string representation") {
-    assert(r0.textual == "Hello World")
-    assert(r1.textual == "-12")
-    assert(r2.textual == "3.5638")
-    assert(r3.textual == "false")
   }
 
   test("Context-bounded type parameters should work for all resource types") {

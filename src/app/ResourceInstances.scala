@@ -12,7 +12,6 @@ trait ResourceInstances
   given as Resource[String]:
     def isCompound(str: String) = false
     def rtype(str: String) = "string"
-    def textual(str: String) = str
     def toJson(str: String) = "\"" + str + "\""
     def fromJson(json: ujson.Value): Try[String] = json match
       case ujson.Str(str) => Success(str)
@@ -21,7 +20,6 @@ trait ResourceInstances
   given as Resource[Int]:
     def isCompound(int: Int) = false
     def rtype(int: Int) = "int"
-    def textual(int: Int) = int.toString
     def toJson(int: Int) = int.toString
     def fromJson(json: ujson.Value): Try[Int] = json match
       case ujson.Num(x) =>
@@ -32,7 +30,6 @@ trait ResourceInstances
   given as Resource[Double]:
     def isCompound(d: Double) = false
     def rtype(d: Double) = "double"
-    def textual(d: Double) = d.toString
     def toJson(d: Double) = d.toString
     def fromJson(json: ujson.Value): Try[Double] = json match
       case ujson.Num(x) => Success(x)
@@ -41,7 +38,6 @@ trait ResourceInstances
   given as Resource[Boolean]:
     def isCompound(b: Boolean) = false
     def rtype(b: Boolean) = "boolean"
-    def textual(b: Boolean) = b.toString
     def toJson(b: Boolean) = b.toString
     def fromJson(json: ujson.Value): Try[Boolean] = json match
       case ujson.True => Success(true)
@@ -51,7 +47,6 @@ trait ResourceInstances
   given [T: Resource] as Resource[List[T]]:
     def isCompound(list: List[T]) = true
     def rtype(list: List[T]) = "list"
-    def textual(list: List[T]) = "(list)"
     def toJson(list: List[T]) = "[" + list.map(_.toJson).mkString(",") + "]"
     def fromJson(json: ujson.Value): Try[List[T]] = json match
       case ujson.Arr(ts) =>

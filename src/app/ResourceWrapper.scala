@@ -12,7 +12,6 @@ final case class ResourceWrapper[T : Resource](res: T)
 
   def isCompound = res.isCompound
   def rtype = res.rtype
-  def textual = res.textual
   def toJson = res.toJson
 
   // Equality operator should ignore wrapping
@@ -48,10 +47,10 @@ object ResourceWrapper
   given as Resource[ResourceWrapper[_]]:
     def isCompound(rw: ResourceWrapper[_]) = rw.isCompound
     def rtype(rw: ResourceWrapper[_]) = rw.rtype
-    def textual(rw: ResourceWrapper[_]) = rw.textual
     def toJson(rw: ResourceWrapper[_]) = rw.toJson
     def fromJson(json: ujson.Value) =
       Failure(Error(
-        "Cannot read resource wrappers from Json due to type system " +
-        "restrictions. Try reading a resource and then wrapping it instead."
+        "Cannot directly read resource wrappers from Json due to the lack of " +
+        "existential types in Scala 3. Try reading the resource directly and " +
+        "then wrapping it instead."
       ))

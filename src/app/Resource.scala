@@ -17,10 +17,6 @@ trait Resource[T : ClassTag]
    */
   def rtype(t: T): String
 
-  // TODO: Remove, as this serves no purpose.
-  /** Textual representation of the resource. */
-  def textual(t: T): String
-
   /** Serialise a resource as a JSON string. */
   def toJson(t: T): String
 
