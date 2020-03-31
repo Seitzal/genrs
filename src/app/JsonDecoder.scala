@@ -15,7 +15,7 @@ private[genrs] object JsonDecoder
   def decodeUnsafe(ujv: ujson.Value): ResourceWrapper[_] = ujv match
 
     case ujson.Obj(value) =>
-      ResourceWrapper(KVObjectResource(
+      ResourceWrapper(JsonObject(
         value.toMap.map((k, v) => (k, decodeUnsafe(v)))
       ))
 

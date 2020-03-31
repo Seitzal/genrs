@@ -28,10 +28,10 @@ class ResourceSuite extends AnyFunSuite
   val l1 = List(1, 2, -6, 10000, 7.3)
   val l2 = List(l1, List(13.3, -2220.0))
 
-  val kvObject0 = KVObjectResource(Map(
-    "name" -> ResourceWrapper("kvObject0"),
+  val object0 = JsonObject(Map(
+    "name" -> ResourceWrapper("object0"),
     "description" -> ResourceWrapper("A key-value object"),
-    "data" -> ResourceWrapper(KVObjectResource(Map(
+    "data" -> ResourceWrapper(JsonObject(Map(
       "l0" -> ResourceWrapper(l0),
       "l1" -> ResourceWrapper(l1)
     )))
@@ -81,29 +81,29 @@ class ResourceSuite extends AnyFunSuite
     assert(l2.isCompound)
   }
 
-  test("KVObjectResource should typecheck as resource") {
-    assert(genericResourceFunction(kvObject0))
+  test("JsonObject should typecheck as resource") {
+    assert(genericResourceFunction(object0))
   }
 
-  test("KVObjectResource should allow untyped lookup") {
-    val name = kvObject0.kv("name")
+  test("JsonObject should allow untyped lookup") {
+    val name = object0.kv("name")
     assert(name.rtype == "string")
     assert(name.res.isInstanceOf[String])
   }
 
-  test("KVObjectResource should allow typed lookup") {
-    assert(kvObject0.getUnsafe[String]("name") == "kvObject0")
+  test("JsonObject should allow typed lookup") {
+    assert(object0.getUnsafe[String]("name") == "object0")
   }
 
   test("Typed lookup should fail if a wrong type is looked up") {
     assertThrows[ResourceTypeException] {
-      kvObject0.getUnsafe[Double]("name")
+      object0.getUnsafe[Double]("name")
     }
   }
 
   test("Typed lookup should fail if a nondefined key is looked up") {
     assertThrows[NoSuchElementException] {
-      kvObject0.getUnsafe[String]("invalid_key")
+      object0.getUnsafe[String]("invalid_key")
     }
   }
 
@@ -111,9 +111,9 @@ class ResourceSuite extends AnyFunSuite
     def identify(rw: ResourceWrapper[_]) = rw.res match
       case str: String => "string"
       case l: List[_] => "list"
-      case kvo: KVObjectResource => "kvo"
-    assert(identify(kvObject0("name")) == "string")
-    assert(identify(kvObject0("data")) == "kvo")
+      case kvo: JsonObject => "kvo"
+    assert(identify(object0("name")) == "string")
+    assert(identify(object0("data")) == "kvo")
     assert(identify(ResourceWrapper(l0)) == "list")
   }
 
@@ -164,14 +164,14 @@ class ResourceSuite extends AnyFunSuite
     assert(Resource[List[List[Double]]].fromJsonUnsafe(l_json) == l)
   }
 
-  test("toJson encoding: KVObjectResource") {
+  test("Json encoding: JsonObject") {
     val expected =
-      "{\"name\":\"kvObject0\",\"description\":\"A key-value object\",\"data\":"
+      "{\"name\":\"object0\",\"description\":\"A key-value object\",\"data\":"
       + "{\"l0\":[\"Hello\",\"World\"],\"l1\":[1.0,2.0,-6.0,10000.0,7.3]}}"
-    assert(kvObject0.toJson == expected)
+    assert(object0.toJson == expected)
   }
 
   test("toJson roundtripping a complex resource should not change it "
   + "(apart from wrapping)") {
-    assert(JsonDecoder.decodeUnsafe(kvObject0.toJson).res == kvObject0)
+    assert(JsonDecoder.decodeUnsafe(object0.toJson).res == object0)
   }
