@@ -14,13 +14,6 @@ final case class ResourceWrapper[T : Resource](res: T)
   def rtype = res.rtype
   def toJson = res.toJson
 
-  // Equality operator should ignore wrapping
-  override def equals(other: Any) = other match
-    case rw: ResourceWrapper[_] => 
-      this.res == rw.res // hidden recursive call
-    case _ => 
-      res == other // Base case: Default to reference implementation
-
   /** Returns the resource contained within the wrapper.
    *  Recursively unwraps nested wrappers, and will never return a wrapper.
    *  @tparam R The type of resource to be extracted.
