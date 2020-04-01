@@ -52,6 +52,16 @@ class ResourceSuite extends AnyFunSuite with TestData
     assertThrows[NoSuchElementException] { result.get }
   }
 
+  test("JsonObjects should allow typed lookup through a query syntax") {
+    assert(object0.query[String]("name") == Success("object0"))
+    assertThrows[ResourceTypeException](object0.query[Double]("name").get)
+    assert(object0.query[List[String]]("data.l0") == Success(List("Hello", "World")))
+    assert(object0.query[List[Double]]("data.l0").isSuccess)
+    assert(object0.query[String]("data.l0[0]") == Success("Hello"))
+    assert(object0.query[Double]("data.l0[0]").isFailure)
+    assertThrows[IndexOutOfBoundsException](object0.query[String]("data.l0[3]").get)
+  }
+
   test("Json encoding / decoding should work for strings") {
     assert("Hello World".toJson == "\"Hello World\"")
     assert(Resource[String].fromJsonUnsafe("\"Hello World\"") == "Hello World")
