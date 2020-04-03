@@ -46,7 +46,9 @@ trait ResourceInstances
 
   given [T: Resource] as Resource[List[T]]:
     def isCompound(list: List[T]) = true
-    def rtype(list: List[T]) = "list"
+    def rtype(list: List[T]) = list match
+      case Nil => "list"
+      case head :: tail => "list:" + head.rtype
     def toJson(list: List[T]) = "[" + list.map(_.toJson).mkString(",") + "]"
     def fromJson(json: ujson.Value): Try[List[T]] = json match
       case ujson.Arr(ts) =>

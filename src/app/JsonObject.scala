@@ -20,6 +20,10 @@ case class JsonObject(kvs: Map[String, ResourceWrapper[_]])
 
   def apply(key: String) = kvs(key)
 
+  def has(name: String) = kvs.isDefinedAt(name)
+
+  def matches(schema: Schema) = schema allows this
+
   def get[R: Resource: ClassTag](key: String): Try[R] =
     Try(kvs(key)).flatMap(_.extract[R])
 

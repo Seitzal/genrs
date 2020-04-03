@@ -28,6 +28,13 @@ class ResourceSuite extends AnyFunSuite with TestData
     assert(List("Hello", "World").isCompound)
   }
 
+  test("Non-empty lists should know their rtype") {
+    assert(List[String]().rtype == "list")
+    assert(List("Hello", "World").rtype == "list:string")
+    assert(List(2, -0.5, 10.34).rtype == "list:double")
+    assert(List(List("Hello", "World")).rtype == "list:list:string")
+  }
+
   test("JsonObjects should be flagged as compound resources") {
     assert(object0.isCompound)
   }
@@ -112,4 +119,11 @@ class ResourceSuite extends AnyFunSuite with TestData
   test("Json encoding / decoding should work for JsonObjects") {
     assert(object0.toJson == object0_json)
     assert(Resource[JsonObject].fromJsonUnsafe(object0_json) ~= object0)
+  }
+
+  test("Schemas should properly detect matching objects") {
+    assert(object0 matches schema0)
+    assert(object1 matches schema0)
+    assert(!(object2 matches schema0))
+    assert(!(object3 matches schema0))
   }

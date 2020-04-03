@@ -27,6 +27,28 @@ trait TestData
     )
   )
 
+  val object1 = jsonObject(
+    "name" -> v("object0"),
+    "description" -> v("A key-value object"),
+    "data" -> o(
+      "l0" -> l()
+    )
+  )
+
+  val object2 = jsonObject()
+
+  val object3 = jsonObject(
+    "foo" -> v("bar")
+  )
+
+  val schema0 = Schema(
+    "name" -> "string",
+    "description" -> "string",
+    "data" -> Schema(
+      "l0" -> "list:string"
+    )
+  )
+
   val object0_json =
     "{\"name\":\"object0\",\"description\":\"A key-value object\",\"data\":"
     + "{\"l0\":[\"Hello\",\"World\"],\"l1\":[1.0,2.0,-6.0,10000.0,7.3]}}"
