@@ -39,7 +39,8 @@ object server extends ScalaModule {
     ivy"org.http4s::http4s-blaze-client:$http4s",
     ivy"org.tpolecat::doobie-core:$doobie",
     ivy"org.tpolecat::doobie-postgres:$doobie",
-    ivy"com.pauldijou::jwt-upickle:$jwt"
+    ivy"com.pauldijou::jwt-upickle:$jwt",
+    ivy"eu.seitzal::http4s-upickle:0.1.0"
   )
 
   object test extends Tests {
