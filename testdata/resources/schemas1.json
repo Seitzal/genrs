@@ -1,0 +1,15 @@
+{
+
+  "Album": {
+    "year": "Int",
+    "title": "Str",
+    "remasters": "Seq:Int"
+  },
+
+  "Artist": {
+    "name": "Str",
+    "genres": "Seq:Str",
+    "albums": "Seq:Album"
+  }
+
+}
