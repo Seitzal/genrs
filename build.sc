@@ -5,6 +5,7 @@ val upickle = "0.9.5"
 val http4s = "0.21.2"
 val doobie = "0.8.8"
 val scalatest = "3.1.1"
+val jwt = "4.2.0"
 
 object testdata extends ScalaModule {
   def moduleDeps = Seq(core)
@@ -17,7 +18,8 @@ object testdata extends ScalaModule {
 object core extends ScalaModule {
   def scalaVersion = globalScalaVersion
   def ivyDeps = Agg(
-    ivy"com.lihaoyi::upickle:$upickle"
+    ivy"com.lihaoyi::upickle:$upickle",
+    ivy"com.pauldijou::jwt-upickle:$jwt"
   )
 
   object test extends Tests {
@@ -36,7 +38,8 @@ object server extends ScalaModule {
     ivy"org.http4s::http4s-blaze-server:$http4s",
     ivy"org.http4s::http4s-blaze-client:$http4s",
     ivy"org.tpolecat::doobie-core:$doobie",
-    ivy"org.tpolecat::doobie-postgres:$doobie"
+    ivy"org.tpolecat::doobie-postgres:$doobie",
+    ivy"com.pauldijou::jwt-upickle:$jwt"
   )
 
   object test extends Tests {

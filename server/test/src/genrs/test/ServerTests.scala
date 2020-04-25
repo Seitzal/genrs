@@ -13,7 +13,6 @@ class ServerTests extends AnyFunSuite {
       .init
       .loadAllJson("testdata/resources/schemas1.json")
       .schemas
-    println(schemas("Artist"))
     assert(schemas("Artist") == artistSchema)
     assert(schemas("Album") == albumSchema)
   }
